@@ -7,8 +7,10 @@ should be brought to login page. Username is johndoe, password is s3cret
 UNIT TESTING
 TEST #1: Testing the Pay button is disabled by default
 
-When logged in, will see dashboard. Click on new, and pick a person to send money to. In instructional message
-"Please enter a valid amount", copy this message and paste it in search in VS code. Will see a TransactionCreateStepTwo.tsx
+When logged in, will see dashboard. Click on new, and pick a person to send money to. In instructional 
+message
+"Please enter a valid amount", copy this message and paste it in search in VS code. Will see a 
+TransactionCreateStepTwo.tsx
 file. Create a new file TransactionCreateStepTwo.test.js. Enter:
 
 import { render, screen } from "@testing-library/react"
@@ -29,7 +31,10 @@ In bash terminal, enter yarn test and will see the test failed. Error message wi
       94 |     receiverId: receiver.id,
       95 |   };
 
-Go back to TransactionCreateStepTwo.tsx and can see that TransactionCreateStepTwo needs a prop sender and receiver based on error message having trouble reading id. Can input sender={{id: '5'}} receiver={{id: '5'}}inside <TransactionCreateStepTwo> in TransactionCreateStepTwo.test.js. Saving this will automatically run the test again and it will pass as shown below:
+Go back to TransactionCreateStepTwo.tsx and can see that TransactionCreateStepTwo needs a prop sender and 
+receiver based on error message having trouble reading id. Can input sender={{id: '5'}} receiver={{id: '5'}}
+inside <TransactionCreateStepTwo> in TransactionCreateStepTwo.test.js. Saving this will automatically run 
+the test again and it will pass as shown below:
 
  PASS  src/components/TransactionCreateStepTwo.test.js (26.518 s)
   √ on initial render, the pay button is disabled (1553 ms)
@@ -40,8 +45,10 @@ Snapshots:   0 total
 Time:        27.154 s
 Ran all test suites.
 
-Without asserts, test will automatically pass. In the screen.debug(), will show console.log of the body, which basically shows the HTML the testing body was able to find. To test by the role instead, replace
-screen.debug() with screen.getByRole(''). Test will fail bc it's unable to find an accessibile element with the role "". But what's nice about this is that it will show what's all the available role, such as:
+Without asserts, test will automatically pass. In the screen.debug(), will show console.log of the body, 
+which basically shows the HTML the testing body was able to find. To test by the role instead, replace
+screen.debug() with screen.getByRole(''). Test will fail bc it's unable to find an accessibile element with 
+the role "". But what's nice about this is that it will show what's all the available role, such as:
 
 Here are the accessible roles:
 
@@ -53,19 +60,31 @@ Here are the accessible roles:
             Name "Request":
             Name "Pay":
 
-Can see it shows a role of interest, which is the button. Can replace screen.getByRole('') with expect(screen.getByRole('button', {name: /pay/i})).toBeEnabled(); /pay/i means case insensitive search
-This test passes even though we thought it would not bc we expect pay button to be disabled until amount is entered. However, when the page is initally rendered, pay button is in fact briefly enabled before being disabled, thus causing test to pass. To get around this problem, use async before the function, await, and findByRole()
+Can see it shows a role of interest, which is the button. Can replace screen.getByRole('') with expect
+(screen.getByRole('button', {name: /pay/i})).toBeEnabled(); /pay/i means case insensitive search
+This test passes even though we thought it would not bc we expect pay button to be disabled until amount is 
+entered. However, when the page is initally rendered, pay button is in fact briefly enabled before being 
+disabled, thus causing test to pass. To get around this problem, use async before the function, await, and 
+findByRole()
 
 test('on initial render, the pay button is disabled', async () => {
     render (<TransactionCreateStepTwo sender={{id: '5'}} receiver={{id: '5'}}/>)
-    expect(await screen.findByRole('button', {name: /pay/i})).toBeEnabled(); //pay/i means case insensitive search
+    expect(await screen.findByRole('button', {name: /pay/i})).toBeEnabled(); //pay/i means case insensitive 
+    search
 })
 
-Now the test will fail bc test expects button to be enabled but it's disabled. Now can change toBeEnabled to toBeDisabled().
+Now the test will fail bc test expects button to be enabled but it's disabled. Now can change toBeEnabled 
+to toBeDisabled().
 ---------------------------------------------
 TEST #2: Making sure pay button is enabled when amount and note is entered
 
-To begin testing this, we need to be able to input some texts in the form. Won't be able to use getByRole since it's used for query and in this case, won't be able to use getByLabelText since there's no label. Can confirm by using screen.getByRole(''). Can see that the textbox doesn't have a name, which eliminates getByRole() and it doesn't use label, but a placeholder instead. Therefore, will use getByPlaceholderText(). To mimic this user event, can make use of userEvent from react testing library. Can enter:
+To begin testing this, we need to be able to input some texts in the form. Won't be able to use getByRole 
+since it's used for query and in this case, won't be able to use getByLabelText since there's no label. Can 
+confirm by using screen.getByRole(''). Can see that the textbox doesn't have a name, which eliminates 
+getByRole() and it doesn't use label, but a placeholder instead. Therefore, will use getByPlaceholderText()
+. To mimic this user event, can make use of userEvent from react testing library. Can enter:
+
+import userEvent from "@testing-library/user-event"
 
 test('if an amount and note is entered, the pay button becomes enabled', async () => {
     render (<TransactionCreateStepTwo sender={{id: '5'}} receiver={{id: '5'}}/>)
@@ -78,7 +97,8 @@ Testing will show
       Name "":
       <input
         aria-invalid="false"
-        class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+        class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense 
+        MuiOutlinedInput-inputMarginDense"
         id="amount"
         inputmode="numeric"
         name="amount"
@@ -106,7 +126,8 @@ expect(await screen.findByRole('button', {name: /pay/i})).toBeEnabled(); and thi
 INTEGRATION TESTING
 TEST #3: Combining test
 
-Can replace the 2 unit tests done into 1 integration test to better resemble an user interaction. Replace the two tests with: 
+Can replace the 2 unit tests done into 1 integration test to better resemble an user interaction. Replace 
+the two tests with: 
 
 test('if an amount and note is entered, the pay button becomes enabled', async () => {
     render (<TransactionCreateStepTwo sender={{id: '5'}} receiver={{id: '5'}}/>)
@@ -117,8 +138,12 @@ test('if an amount and note is entered, the pay button becomes enabled', async (
 })
 ---------------------------------------------------------
 END TO END TESTING
-install cypress using command in git bash terminal yarn add -D cypress @testing-library/cypress.
-Then enter yarn run cypress open. Will see cypress window popup and will already have some tests in it. Will remove it by going to cypress folder and under integration, delete the folders within it. Next go to support folder within cypress folder and click on commands.js. Replace everything with import "@testing-library/cypress/add-commands". Go back to integration folder and add new file called payment_spec.js
+install cypress using command in git bash terminal yarn add -D cypress @testing-library/cypress
+Then enter yarn run cypress open. Will see cypress window popup and will already have some tests in it. 
+Will remove it by going to cypress folder and under integration, delete the folders within it. Next go to 
+support folder within cypress folder and click on commands.js. Replace everything with import 
+"@testing-library/cypress/add-commands". Go back to integration folder and add new file called payment_spec.
+js
 
 Add following code:
 
@@ -137,7 +162,10 @@ describe('payment', () => {
     })
 })
 
-The comments is meant to highlight the steps a user will take. Also recommend downloading chrome extension testing playground, which when hovering over element in page, will suggest query. Open cypress window and will see payment_spec.js file. Can choose browser to test on and click run integration spec. New browser will open but error message will show nothing is ran bc no command was found.
+The comments is meant to highlight the steps a user will take. Also recommend downloading chrome extension 
+testing playground, which when hovering over element in page, will suggest query. Open cypress window and 
+will see payment_spec.js file. Can choose browser to test on and click run integration spec. New browser 
+will open but error message will show nothing is ran bc no command was found.
 
 Enter following codes:
 
@@ -172,7 +200,8 @@ describe('payment', () => {
         cy.findByText(/return to transactions/i).click()
 
         //go to personal payments by clicking on mine tab
-          //need force:true bc if the element we are trying to click is being covered by another element. Will force cypress to click on element even though it's hidden
+          //need force:true bc if the element we are trying to click is being covered by another element. 
+          Will force cypress to click on element even though it's hidden
         cy.findByRole('tab', { name: /mine/i }).click();
 
         //click on a previous transaction/ payment
@@ -184,17 +213,24 @@ describe('payment', () => {
 
         //verify if correct payment amount was deducted
         cy.get('[data-test=sidenav-user-balance]').then($balance => {
-            const convertedOldBalance = parseFloat(oldBalance.replace(/\$|,/g, "")) //replace $ and , .The g is global search, looking in whole string and returning the matches 
+            const convertedOldBalance = parseFloat(oldBalance.replace(/\$|,/g, "")) //replace $ and , .The 
+            g is global search, looking in whole string and returning the matches 
             const convertedNewBalance = parseFloat($balance.text().replace(/\$|,/g, ""))
             expect(convertedOldBalance - convertedNewBalance).to.equal(parseFloat(paymentAmount))
     })
 })
 
-When testing on browser and checking on each element on page, can use inspect tool and click on testing playground. Click on select element icon and hover over an element of interest and will show back a suggested query, ex: screen.getByRole('textbox', {  name: /username/i})
-HOWEVER, when copying it back into payment_spec.js, replace screen with cy and in cypress, always use findByRole() instead of getByRole(). Always replace get...() with find...() for everything.
+When testing on browser and checking on each element on page, can use inspect tool and click on testing 
+playground. Click on select element icon and hover over an element of interest and will show back a 
+suggested query, ex: screen.getByRole('textbox', {  name: /username/i})
+HOWEVER, when copying it back into payment_spec.js, replace screen with cy and in cypress, always use 
+findByRole() instead of getByRole(). Always replace get...() with find...() for everything.
 
-In line 154, used data-test bc the balance is dynamic and the query given by testing playground won't be good. Ex of query given by testing playground: screen.getByRole('heading', {  name: /\$99,500\.00/i})
-To get around this, cypress has a tool built in. Click on the crosshair/ open selector playground button and then click on the balance. Will show: cy.get('[data-test="sidenav-user-balance"]'). Using this is last resort since user doesn't look at elements by test id, but by query. 
+In line 183, used data-test bc the balance is dynamic and the query given by testing playground won't be 
+good. Ex of query given by testing playground: screen.getByRole('heading', {  name: /\$99,500\.00/i})
+To get around this, cypress has a tool built in. Click on the crosshair/ open selector playground button 
+and then click on the balance. Will show: cy.get('[data-test="sidenav-user-balance"]'). Using this is last 
+resort since user doesn't look at elements by test id, but by query. 
 
 Test passed bc all 3 assertions passed.
 

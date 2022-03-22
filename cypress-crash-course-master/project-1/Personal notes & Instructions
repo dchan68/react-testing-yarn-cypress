@@ -1,0 +1,90 @@
+learning resource: https://www.youtube.com/watch?v=avb-VDa3ZG4
+
+enter npm install to download all the dependencies
+enter npm start
+in new terminal, enter npm install cypress
+To open a cypress instance, enter npx cypress open
+
+In cypress.json, enter "ignoreTestFiles": "ignoreTestFiles": [
+                                                               "**/1-getting-started/*.js",
+                                                               "**/2-advanced-examples/*.js"
+                                                              ], 
+to ignore some test files. This will ignore the ignore 
+the test files in the cypress/intergration/2-advanced-examples.
+Can also enter a base url. Can manipulate the view port width and height
+
+Create directory of project-1 in integration folder. Create locators.spec.js in the folder.
+Enter /// <reference types="cypress" /> on top of file. Will tell VS Code that it's a cypress file & can help with auto-completion.
+
+describe() will be the block where the tests will be. Enter:
+
+        describe("locators", () => {
+            beforeEach(() => {
+                cy.visit("/elements")
+            })
+            it("locating elements with the get command", () => {
+                //Get all elements by tag name
+                cy.get("button")
+                //Get all elements by their className
+                cy.get(".btn-with-class")
+
+                //Get all elements with specific classes
+                cy.get("[class='Elements-btn btn-with-class']")
+                cy.get("[class='Elements-btn btn-with-class more-btn-classes']")
+
+                //Get all elements by id
+                cy.get("[id='btn-with-id']")
+                cy.get("#btn-with-id")
+
+                //Get all elements by specific attribute
+                cy.get("[type='submit']")
+
+                //Get all elements by tag name AND class
+                cy.get("button.Elements-btn")
+
+                //Get all elements by tag name AND class AND id
+                cy.get("button.Elements-btn#btn-with-id")
+
+                //Get all elements by tag name And class And type attribute
+                cy.get("button.Elements-btn[type='submit']")
+
+                //Get all elements with specific data test id
+                cy.get("[data-cy='btn-id-1']")
+        })
+
+beforeEach will run before ALL the tests. for visit, it will go to http:localhost:3000/elements bc our baseUrl in cypress.json was 
+http://localhost:3000. And then it will append /elements at the end. 
+
+Getting elements by their className/ id is not resilient bc they can always change. Better way would be giving them some unique
+identifier that is specific for the test only. Can append data to whatever element you want. In the button with class="Elements-btn"
+there is data-cy="btn-id-1", which can be our unique identifier. 
+
+[data-cy='btn-id-1'] can get ugly and one way to inject commands inside of cypress is inside the support directory. Can use bunch
+of commands that we can use. Enter in commands.js in support directory:
+
+        Cypress.Commands.add("getByTestId", (testId) => {
+            cy.get(`[data-cy='${testId}']`)
+        })
+
+AND add to locators.specs.js under cy.get("[data-cy='btn-id-1']"):
+
+        cy.getByTestId("btn-id-1")
+
+Doing this will make the code prettier
+
+Add within the same test block:
+
+        it("locating elements with contains", () => {
+            //Get elements by text
+            cy.contains("Unique Text")
+
+            //Get element by text
+            cy.contains("Not Unique Text")
+        })
+
+Contains will only return 1 result. Even if several elements contains the same text, only 1 will be return and that's the first one
+it finds. If want to select an element that has same text as another element, then need to use selectors. Ex:
+
+        //With Selector
+        cy.contains("[type='submit']","Not Unique Text")
+
